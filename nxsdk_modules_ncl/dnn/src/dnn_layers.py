@@ -27,9 +27,9 @@ from enum import IntEnum
 from typing import TYPE_CHECKING
 
 import numpy as np
-from tensorflow.keras.layers import Conv2D, DepthwiseConv2D, Dense, \
+from keras.layers import Conv2D, DepthwiseConv2D, Dense, \
     AveragePooling2D, Flatten, Conv1D, ZeroPadding2D, Reshape, InputLayer
-from tensorflow.keras.models import Model, load_model
+from keras.models import Model, load_model
 from scipy.sparse import lil_matrix, load_npz, save_npz
 
 # Import plotting modules first to ensure plt backend is set correctly.
@@ -1237,7 +1237,7 @@ class NxConv2D(NxLayer, Conv2D):
     def build(self, input_shape):
         Conv2D.build(self, input_shape)
 
-        self._padding = _getPadding(input_shape.as_list()[1:], self.padding,
+        self._padding = _getPadding(list(input_shape)[1:], self.padding,
                                     self.kernel_size, self.strides,
                                     self.dilation_rate)
 
@@ -1574,7 +1574,7 @@ class NxDepthwiseConv2D(NxLayer, DepthwiseConv2D):
     def build(self, input_shape):
         DepthwiseConv2D.build(self, input_shape)
 
-        self._padding = _getPadding(input_shape.as_list()[1:], self.padding,
+        self._padding = _getPadding(list(input_shape)[1:], self.padding,
                                     self.kernel_size, self.strides,
                                     self.dilation_rate)
 
@@ -1685,7 +1685,7 @@ class NxAveragePooling2D(NxLayer, AveragePooling2D):
         return config
 
     def build(self, input_shape):
-        input_shape_list = input_shape.as_list()
+        input_shape_list = list(input_shape)
         self._padding = _getPadding(input_shape_list[1:], self.padding,
                                     self.pool_size, self.strides, (1, 1))
 
