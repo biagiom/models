@@ -26,7 +26,8 @@ import warnings
 import tempfile
 
 import numpy as np
-from tensorflow import keras
+# from tensorflow import keras
+import keras
 
 import nxsdk_modules_ncl.dnn.src.dnn_layers as nxtf
 from nxsdk.graph.nxboard import N2Board
@@ -254,7 +255,7 @@ class SNN(AbstractSNN):
 
         if self._poisson_input:
             raise NotImplementedError
-        elif self._is_aedat_input:
+        elif hasattr(self, '_is_aedat_input') and self._is_aedat_input:
             input_mode = nxtf.InputModes.AEDAT
         else:
             input_mode = nxtf.InputModes.BIAS
@@ -488,7 +489,7 @@ class SNN(AbstractSNN):
         run_kwargs = {'aSync': True}
         batch_duration = self._duration * self.batch_size
 
-        if self._is_aedat_input:
+        if hasattr(self, '_is_aedat_input') and self._is_aedat_input:
             dvs_gen = kwargs['dvs_gen']
             x_b_l = []
             for _ in range(self._duration):
@@ -877,7 +878,7 @@ class SNN(AbstractSNN):
             self.composed_snn.composables.input.encode(np.expand_dims(z, 0))
 
         for x in inputs:
-            if self._is_aedat_input:
+            if hasattr(self, '_is_aedat_input') and self._is_aedat_input:
                 # Input x consists of num_timesteps "event-frames". Send them
                 # in sequentially.
                 for x_t in x:
@@ -1076,7 +1077,7 @@ class SNN(AbstractSNN):
         # When using aedat (DVS) input, the InputGenerator processes one event
         # frame each time step. Otherwise, a dense frame is processed for
         # self._duration timesteps.
-        input_interval = 1 if self._is_aedat_input else interval
+        input_interval = 1 if hasattr(self, '_is_aedat_input') and self._is_aedat_input else interval
         input_generator = InputGenerator(shape, interval=input_interval,
                                          numSnipsPerChip=3)
         input_generator.name = 'input'
